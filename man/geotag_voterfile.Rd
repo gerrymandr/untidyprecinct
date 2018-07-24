@@ -7,19 +7,24 @@
 geotag_voterfile(x, address_field, city_field, state_field, runtime = TRUE)
 }
 \arguments{
-\item{state}{Postal abbreviation or 2 digit FIPS code of US state \code{state}}
+\item{x}{Voterfile dataframe \code{x}}
 
-\item{inputParameter2}{County name or 3 digit FIPS code \code{inputParameter2}}
+\item{address_field}{Field in x that refers to the street address (house number & street name) \code{address_field}}
+
+\item{city_field}{Field in x that refers to the city name \code{city_field}}
+
+\item{state_field}{Field in x that refers to the state name \code{state_field}}
+
+\item{runtime}{If TRUE, returns the runtime of the geocoding as a message, meaured as start sys.Time() - end sys.Time(). Default = TRUE \code{runtime}}
 }
 \value{
-output 'sf' dataframe of 2010 census blocks for the given county
+vector of block GEOIDs that can be appended to the voterfile dataframe with dplyr::bind_rows()
 }
 \description{
 We refer to "geotagging" as assigning a Census geography id to an address. This function takes addresses from a voterfile separated into residential address, city and state. It creates a vector of 2010 Census block GEOIDs that can be appended to the voterfile dataframe.
 }
 \examples{
-load_blocks(state = "OH", county = "Vinton")
-load_blocks(state = 39, county = 165) # these will produce the same result
+geotag_voterfile(voterfile, 'RESIDENTIAL_ADDRESS1', 'RESIDENTIAL_CITY', 'RESIDENTIAL_STATE')
 }
-\keyword{blocks}
-\keyword{census,}
+\keyword{blocks,}
+\keyword{geotag}

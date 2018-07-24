@@ -9,7 +9,7 @@ load_blocks(state = "OH", county)
 \arguments{
 \item{state}{Postal abbreviation or 2 digit FIPS code of US state \code{state}}
 
-\item{inputParameter2}{County name or 3 digit FIPS code \code{inputParameter2}}
+\item{county}{County name or 3 digit FIPS code \code{county}}
 }
 \value{
 output 'sf' dataframe of 2010 census blocks for the given county
