@@ -20,7 +20,7 @@
 #' geotag_voterfile(voterfile, 'RESIDENTIAL_ADDRESS1', 'RESIDENTIAL_CITY', 'RESIDENTIAL_STATE')
 
 
-geotag_voterfile <- function(x, address_field, city_field, state_field, runtime = TRUE){
+geotag_voterfile <- function(x, address_field = 'RESIDENTIAL_ADDRESS1', city_field = 'RESIDENTIAL_CITY', state_field = 'RESIDENTIAL_STATE', runtime = TRUE){
   # start_time <- Sys.time()
   vec <- map_chr(1:nrow(x), function(i) call_geolocator(x[[address_field]][i], x[[city_field]][i], x[[state_field]][i]))
   # end_time <- Sys.time()
@@ -28,5 +28,7 @@ geotag_voterfile <- function(x, address_field, city_field, state_field, runtime 
   # coverage <- sum(!is.na(vec))/length(vec)
   # if(runtime) message(paste0("Time to geocode: ", as.character(runtime), " minutes"))
   # message(paste0(as.character(coverage), "% of addresses were valid"))
-  return(vec)
+  x$BLOCK_GEOID <- vec
+  
+  return(x)
 }
