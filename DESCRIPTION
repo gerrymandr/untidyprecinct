@@ -21,4 +21,5 @@ Imports:
     readr,
     sf
 Suggests:
-    ggplot2
+    ggplot2,
+    extrafont

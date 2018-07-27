@@ -1,28 +1,27 @@
-#' Geotag voterfile addresses with 2010 Census block GEOIDs
+#' Join the geotagged voterfile to 2010 census blocks
 #'
-#' We refer to "geotagging" as assigning a Census geography id to an address. This function takes addresses from a voterfile separated into residential address, city and state. It creates a vector of 2010 Census block GEOIDs that can be appended to the voterfile dataframe.
+#' Use this function to assign 2010 census blocks to a particular precinct based on the most common precinct assignment of the voters geotagged there.
 #'
-#' @param x Voterfile dataframe
+#' @param x Geotagged voterfile dataframe, should be output from geotag_voterfile()
 #' @param blocks 'sf' dataframe of 2010 census blocks. Use load_blocks() to load the blocks for your county
-#' @param neighbor Type of neighbor relationship to use (rook or queen)
-#' @param state_field Field in x that refers to the state name
-#' @param runtime If TRUE, returns the runtime of the geocoding as a message, meaured as start sys.Time() - end sys.Time(). Default = TRUE
+#' @param block_geoid_voters Field in x that refers to the census block geoid. Should be called 'BLOCK_GEOID' from geotag_voterfile() output.
+#' @param precinct_name Field in x that refers to the precinct name. Default= 'PRECINCT_NAME'. 
 #'
 #'
-#' @return vector of block GEOIDs that can be appended to the voterfile dataframe with dplyr::bind_rows()
+#' @return dataframe of blocks with assigned precincts using the most common precinct of the voters in that block
 #'
-#' @keywords blocks, geotag
+#' @keywords blocks, voterfile
 #'
 #' @export
 #'
 #' \dontrun
 #' @examples
-#' geotag_voterfile(voterfile, 'RESIDENTIAL_ADDRESS1', 'RESIDENTIAL_CITY', 'RESIDENTIAL_STATE')
+#' join_voters_to_blocks(noble_voters, noble_blocks, block_geoid_voters = "GEOID10")
 #'
 
 join_voters_to_blocks <- function(voters, blocks, block_geoid_voters = "BLOCK_GEOID", precinct_name = "PRECINCT_NAME"){
-  block_geoid_q <- enquo(block_geoid_voters)
-  precinct_name_q <- enquo(precinct_name)
+  colnames(voters)[colnames(voters)==block_geoid_voters] <- 'BLOCK_GEOID'
+  colnames(voters)[colnames(voters)==precinct_name] <- 'PRECINCT_NAME'
   precincts <- voters %>%
     # mutate(BLOCK_GEOID = as.character(!! block_geoid_q)) %>%
     # rename(PRECINCT_NAME = (!! precinct_name_q)) %>%
@@ -40,6 +39,26 @@ join_voters_to_blocks <- function(voters, blocks, block_geoid_voters = "BLOCK_GE
 
 }
 
+#' Assign a neighborhood to each block
+#'
+#' Using rook or queen contiguity, create a vector of neighbors for each block. Queen contiguity includes corners while rook does not. Rook contiguity is most commonly used. 
+#'
+#' @param x Voterfile dataframe
+#' @param type Neighborhood type ('rook' or 'queen')
+#'
+#'
+#' @return x with a neighborhood column
+#'
+#' @keywords neighbors
+#'
+#' @export
+#'
+#' \dontrun
+#' @examples
+#' find_neighbors(noble_join, type = 'rook')
+#'
+
+
 find_neighbors <- function(x, type = "rook"){
   if (type == "rook"){
     NB <- st_rook(x)
@@ -56,8 +75,17 @@ find_neighbors <- function(x, type = "rook"){
   return(x)
 }
 
+#' Lookup the precinct names of each block in a neighborhood.
+#'
+#' This function translates the vector of neighbors for each census block into a vector of precinct names. This is useful for the nearest neighbor classification.
+#'
+#' @param x Voterfile dataframe, output from find_neighbors()
+#'
+#' @return x with a column of precinct names for each element in the neighborhood
+#'
+#' @export
 
-### USE THIS TO LOOKUP PRECINCTS FOR NOW
+
 
 lookup_precincts_nn <- function(x){
   precinct_nn <- list()
@@ -79,6 +107,15 @@ lookup_precincts_nn <- function(x){
   
 }
 
+#' Geotag voterfile addresses with 2010 Census block GEOIDs
+#'
+#' We refer to "geotagging" as assigning a Census geography id to an address. This function takes addresses from a voterfile separated into residential address, city and state. It creates a vector of 2010 Census block GEOIDs that can be appended to the voterfile dataframe.
+#'
+#' @param x Voterfile dataframe, output from lookup_precincts_nn()
+#'
+#' @return x with 'PRECINCT_NAME' filled in for blocks with >=1 classified neighbor
+#'
+#' @export
 
  
 classify_nn <- function(x){
@@ -110,6 +147,8 @@ classify_nn <- function(x){
     mutate(PRECINCT_NAME.x = if_else(is.na(PRECINCT_NAME.x), PRECINCT_NAME.y, PRECINCT_NAME.x)) %>%
     select(-PRECINCT_NAME.y) %>%
     rename(PRECINCT_NAME = PRECINCT_NAME.x)
+  
+  message(paste0("There are ", sum(is.na(x$PRECINCT_NAME)), " unclassified blocks."))
   
   return(precincts_nb_full)
 }

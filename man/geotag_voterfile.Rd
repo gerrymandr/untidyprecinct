@@ -4,7 +4,9 @@
 \alias{geotag_voterfile}
 \title{Geotag voterfile addresses with 2010 Census block GEOIDs}
 \usage{
-geotag_voterfile(x, address_field, city_field, state_field, runtime = TRUE)
+geotag_voterfile(x, address_field = "RESIDENTIAL_ADDRESS1",
+  city_field = "RESIDENTIAL_CITY", state_field = "RESIDENTIAL_STATE",
+  runtime = TRUE)
 }
 \arguments{
 \item{x}{Voterfile dataframe \code{x}}
