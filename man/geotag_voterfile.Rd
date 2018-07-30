@@ -27,6 +27,8 @@ We refer to "geotagging" as assigning a Census geography id to an address. This 
 }
 \examples{
 geotag_voterfile(voterfile, 'RESIDENTIAL_ADDRESS1', 'RESIDENTIAL_CITY', 'RESIDENTIAL_STATE')
+
 }
+\keyword{\dontrun}
 \keyword{blocks,}
 \keyword{geotag}

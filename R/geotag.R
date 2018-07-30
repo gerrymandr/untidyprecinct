@@ -13,16 +13,16 @@
 #'
 #' @keywords blocks, geotag
 #'
-#' @export
-#'
 #' \dontrun
 #' @examples
 #' geotag_voterfile(voterfile, 'RESIDENTIAL_ADDRESS1', 'RESIDENTIAL_CITY', 'RESIDENTIAL_STATE')
+#' 
+#' @export
 
 
 geotag_voterfile <- function(x, address_field = 'RESIDENTIAL_ADDRESS1', city_field = 'RESIDENTIAL_CITY', state_field = 'RESIDENTIAL_STATE', runtime = TRUE){
   # start_time <- Sys.time()
-  vec <- map_chr(1:nrow(x), function(i) call_geolocator(x[[address_field]][i], x[[city_field]][i], x[[state_field]][i]))
+  vec <- purrr::map_chr(1:nrow(x), function(i) tigris::call_geolocator(x[[address_field]][i], x[[city_field]][i], x[[state_field]][i]))
   # end_time <- Sys.time()
   # runtime <- end_time - start_time
   # coverage <- sum(!is.na(vec))/length(vec)

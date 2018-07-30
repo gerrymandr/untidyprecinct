@@ -9,16 +9,18 @@
 #'
 #' @keywords census, blocks
 #'
-#' @export
 #'
 #' \dontrun
 #' @examples
 #' load_blocks(state = "OH", county = "Vinton")
 #' load_blocks(state = 39, county = 165) # these will produce the same result
+#' 
+#' @export
 
 load_blocks <- function(state = "OH", county){
-  x <- blocks(state = state, county = county) %>%
-    st_as_sf()
+  x <- tigris::blocks(state = state, county = county) 
+  x_sf <- sf::st_as_sf(x)
+  return(x_sf)
 }
 
 #' Load the public voterfile for a county
@@ -32,19 +34,18 @@ load_blocks <- function(state = "OH", county){
 #'
 #' @keywords voterfiles
 #'
-#' @export
-#'
 #' \dontrun
 #' @examples
 #' load_voterfile(state = "oh", county = "williams")
-#'
+#' 
+#' @export
 
 load_voterfile <- function(state = "OH", county){
   url <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vRKhdA9LmZsRiNGKs3T2XE5mxjLiE3eck3UYiE4jpg20sSOeuLyPqxb6H5qu0u6kL4EmJkYRPenIPPc/pub?gid=0&single=true&output=csv"
-  csv <- suppressMessages(read_csv(url))
+  csv <- suppressMessages(readr::read_csv(url))
   sub <- csv[ which(csv$State== toupper(state) & csv$County == toupper(county)), ]
   link <- sub[[1, 3]]
-  voterfile <- read_csv(link)
+  voterfile <- readr::read_csv(link)
   return(voterfile)
 }
 

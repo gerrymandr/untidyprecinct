@@ -2,9 +2,10 @@ Package: untidyprecinct
 Type: Package
 Title: Interpolates Precinct Boundaries from Public Voterfiles
 Version: 0.1.0
-Authors@R: c(
-    person("Katie", "Jolly", email = "katiejolly6@gmail.com",  c("aut", "cre")),
-    person("Ruth", "Buck", email = "rbuck1295@gmail.com", role = "aut"))
+Authors@R: as.person(c(
+    "Katie Jolly <katiejolly6@gmail.com> [aut, cre]", 
+    "Ruth Buck <rbuck1295@gmail.com> [aut]"
+  ))
 Description: Using public voterfiles, we can interpolate the precinct boundaries
     for counties that don't publish shapefiles with a nearest neighbor algorithm.
     It's a best approximation and fills in the gaps until a better effort is 
@@ -22,4 +23,8 @@ Imports:
     sf
 Suggests:
     ggplot2,
-    extrafont
+    extrafont,
+    randomcoloR,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

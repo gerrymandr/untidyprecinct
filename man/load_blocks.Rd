@@ -20,6 +20,9 @@ Takes state and county as inputs and returns an 'sf' dataframe of 2010 census bl
 \examples{
 load_blocks(state = "OH", county = "Vinton")
 load_blocks(state = 39, county = 165) # these will produce the same result
+
+#' @export
 }
+\keyword{\dontrun}
 \keyword{blocks}
 \keyword{census,}

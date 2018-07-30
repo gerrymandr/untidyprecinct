@@ -12,12 +12,11 @@
 #'
 #' @keywords blocks, voterfile
 #'
-#' @export
-#'
 #' \dontrun
 #' @examples
 #' join_voters_to_blocks(noble_voters, noble_blocks, block_geoid_voters = "GEOID10")
 #'
+#' @export
 
 join_voters_to_blocks <- function(voters, blocks, block_geoid_voters = "BLOCK_GEOID", precinct_name = "PRECINCT_NAME"){
   colnames(voters)[colnames(voters)==block_geoid_voters] <- 'BLOCK_GEOID'
@@ -25,15 +24,15 @@ join_voters_to_blocks <- function(voters, blocks, block_geoid_voters = "BLOCK_GE
   precincts <- voters %>%
     # mutate(BLOCK_GEOID = as.character(!! block_geoid_q)) %>%
     # rename(PRECINCT_NAME = (!! precinct_name_q)) %>%
-    group_by(BLOCK_GEOID, PRECINCT_NAME) %>% # for each block, precinct combination
-    summarise(c=n()) %>% # counts the number of times a precinct is counted for a particular block
-    filter(row_number(desc(c))==1) # dataframe of precincts from voterfile, takes the most common precinct assignment for a block
+    dplyr::group_by(BLOCK_GEOID, PRECINCT_NAME) %>% # for each block, precinct combination
+    dplyr::summarise(c=n()) %>% # counts the number of times a precinct is counted for a particular block
+    dplyr::filter(row_number(desc(c))==1) # dataframe of precincts from voterfile, takes the most common precinct assignment for a block
 
   precincts_geo <- blocks %>%
-    mutate(GEOID10 = as.character(GEOID10)) %>%
-    left_join(precincts, by = c("GEOID10" = "BLOCK_GEOID")) %>% # combine precincts with block shapefile
-    mutate(dimension = st_dimension(.)) %>%
-    filter(!(is.na(dimension))) # take out empty polygons
+    dplyr::mutate(GEOID10 = as.character(GEOID10)) %>%
+    dplyr::left_join(precincts %>% st_set_geometry(NULL), by = c("GEOID10" = "BLOCK_GEOID")) %>% # combine precincts with block shapefile
+    dplyr::mutate(dimension = st_dimension(.)) %>%
+    dplyr::filter(!(is.na(dimension))) # take out empty polygons
 
   return(precincts_geo)
 
@@ -51,12 +50,11 @@ join_voters_to_blocks <- function(voters, blocks, block_geoid_voters = "BLOCK_GE
 #'
 #' @keywords neighbors
 #'
-#' @export
-#'
 #' \dontrun
 #' @examples
 #' find_neighbors(noble_join, type = 'rook')
 #'
+#' @export
 
 
 find_neighbors <- function(x, type = "rook"){

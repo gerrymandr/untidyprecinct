@@ -21,4 +21,5 @@ Using rook or queen contiguity, create a vector of neighbors for each block. Que
 find_neighbors(noble_join, type = 'rook')
 
 }
+\keyword{\dontrun}
 \keyword{neighbors}

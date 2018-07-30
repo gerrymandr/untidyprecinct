@@ -2,30 +2,16 @@
 % Please edit documentation in R/nn.R
 \name{lookup_precincts_nn}
 \alias{lookup_precincts_nn}
-\title{Geotag voterfile addresses with 2010 Census block GEOIDs}
+\title{Lookup the precinct names of each block in a neighborhood.}
 \usage{
 lookup_precincts_nn(x)
 }
 \arguments{
-\item{x}{Voterfile dataframe}
-
-\item{blocks}{'sf' dataframe of 2010 census blocks. Use load_blocks() to load the blocks for your county}
-
-\item{neighbor}{Type of neighbor relationship to use (rook or queen)}
-
-\item{state_field}{Field in x that refers to the state name}
-
-\item{runtime}{If TRUE, returns the runtime of the geocoding as a message, meaured as start sys.Time() - end sys.Time(). Default = TRUE}
+\item{x}{Voterfile dataframe, output from find_neighbors()}
 }
 \value{
-vector of block GEOIDs that can be appended to the voterfile dataframe with dplyr::bind_rows()
+x with a column of precinct names for each element in the neighborhood
 }
 \description{
-We refer to "geotagging" as assigning a Census geography id to an address. This function takes addresses from a voterfile separated into residential address, city and state. It creates a vector of 2010 Census block GEOIDs that can be appended to the voterfile dataframe.
+This function translates the vector of neighbors for each census block into a vector of precinct names. This is useful for the nearest neighbor classification.
 }
-\examples{
-geotag_voterfile(voterfile, 'RESIDENTIAL_ADDRESS1', 'RESIDENTIAL_CITY', 'RESIDENTIAL_STATE')
-
-}
-\keyword{blocks,}
-\keyword{geotag}

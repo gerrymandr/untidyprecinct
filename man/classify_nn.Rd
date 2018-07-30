@@ -7,25 +7,11 @@
 classify_nn(x)
 }
 \arguments{
-\item{x}{Voterfile dataframe}
-
-\item{blocks}{'sf' dataframe of 2010 census blocks. Use load_blocks() to load the blocks for your county}
-
-\item{neighbor}{Type of neighbor relationship to use (rook or queen)}
-
-\item{state_field}{Field in x that refers to the state name}
-
-\item{runtime}{If TRUE, returns the runtime of the geocoding as a message, meaured as start sys.Time() - end sys.Time(). Default = TRUE}
+\item{x}{Voterfile dataframe, output from lookup_precincts_nn()}
 }
 \value{
-vector of block GEOIDs that can be appended to the voterfile dataframe with dplyr::bind_rows()
+x with 'PRECINCT_NAME' filled in for blocks with >=1 classified neighbor
 }
 \description{
 We refer to "geotagging" as assigning a Census geography id to an address. This function takes addresses from a voterfile separated into residential address, city and state. It creates a vector of 2010 Census block GEOIDs that can be appended to the voterfile dataframe.
 }
-\examples{
-geotag_voterfile(voterfile, 'RESIDENTIAL_ADDRESS1', 'RESIDENTIAL_CITY', 'RESIDENTIAL_STATE')
-
-}
-\keyword{blocks,}
-\keyword{geotag}

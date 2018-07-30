@@ -19,6 +19,6 @@ Loads a csv of the public voterfile in a county. Currently only supports Ohio co
 }
 \examples{
 load_voterfile(state = "oh", county = "williams")
-
 }
+\keyword{\dontrun}
 \keyword{voterfiles}

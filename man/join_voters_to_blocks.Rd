@@ -26,5 +26,6 @@ Use this function to assign 2010 census blocks to a particular precinct based on
 join_voters_to_blocks(noble_voters, noble_blocks, block_geoid_voters = "GEOID10")
 
 }
+\keyword{\dontrun}
 \keyword{blocks,}
 \keyword{voterfile}
